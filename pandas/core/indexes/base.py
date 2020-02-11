@@ -2886,16 +2886,16 @@ class Index(IndexOpsMixin, PandasObject):
         >>> non_monotonic_index.get_loc('b')
         array([False,  True, False,  True], dtype=bool)
         """
-        if method is None:
-            if tolerance is not None:
-                raise ValueError(
-                    "tolerance argument only valid if using pad, "
-                    "backfill or nearest lookups"
-                )
-            casted_key = self._maybe_cast_indexer(key)
-            try:
-                return self._engine.get_loc(casted_key)
-            except KeyError:
+        if method is None and tolerance is not None:
+            raise ValueError(
+                "tolerance argument only valid if using pad, "
+                "backfill or nearest lookups"
+            )
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError:
+            if method is None:
                 raise KeyError(key)
 
         if tolerance is not None:
